@@ -46,17 +46,9 @@ class _HomePageState extends State<HomePage> {
         leading: const Icon(Icons.arrow_back),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-
-              },
-              child: const Text("Click Me"),
-            )
-          ],
+        child: TextButton(
+          onPressed: () => throw Exception(),
+          child: const Text("Throw Test Exception"),
         ),
       ),
     );
