@@ -1,14 +1,43 @@
-import 'package:demo_flutter_app/utils/permission_manager.dart';
+import 'package:demo_flutter_app/views/permission/permission_view.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-class HomePage extends StatelessWidget{
+class HomePage extends StatefulWidget{
   const HomePage({Key? key}) : super(key: key);
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  @override
+  void initState() {
+    super.initState();
+    setupInteractedMessage();
+  }
+
+  Future<void> setupInteractedMessage() async {
+
+    //Get message in terminated state
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  void _handleMessage(RemoteMessage message) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const PermissionView()));
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         elevation: 2,
@@ -16,17 +45,19 @@ class HomePage extends StatelessWidget{
         title: const Text("Home"),
         leading: const Icon(Icons.arrow_back),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () async {
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () async {
 
-            },
-            child: const Text("Request SMS Permission"),
-          )
-        ],
+              },
+              child: const Text("Click Me"),
+            )
+          ],
+        ),
       ),
     );
   }
